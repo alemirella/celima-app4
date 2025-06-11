@@ -125,7 +125,7 @@ class AdminController extends Controller
         return view('admin.soporte');
     }
 
-    public function soporteSubmit(Request $request)
+    public function submitSoporte(Request $request)
     {
         $request->validate([
             'nombre' => 'required|string|max:255',

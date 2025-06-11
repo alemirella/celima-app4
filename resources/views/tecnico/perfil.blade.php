@@ -1,27 +1,39 @@
-@extends('layouts.tecnico')
-
-@section('title', 'Mi Perfil')
+@extends('layouts.tecnico') <!-- Usa tu layout principal -->
 
 @section('content')
-<div class="card shadow-sm">
-    <div class="card-header bg-success text-white">
-        <h2 class="mb-0">Mi Perfil (Técnico)</h2>
-    </div>
-    <div class="card-body">
-        <p class="lead">Datos personales del técnico.</p>
+<div class="container">
+    <h1>Perfil de Tecnico</h1>
 
-        <dl class="row">
-            <dt class="col-sm-3">Nombre</dt>
-            <dd class="col-sm-9">{{ auth()->user()->usuario_nombre ?? 'Técnico' }}</dd>
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
 
-            <dt class="col-sm-3">Email</dt>
-            <dd class="col-sm-9">{{ auth()->user()->email ?? 'email@example.com' }}</dd>
+    <!-- Si se está editando -->
+    @if(request()->has('edit'))
+        <form action="{{ route('tecnico.perfil.editar') }}" method="POST">
+            @csrf
+            <div class="mb-3">
+                <label>Nombre de usuario</label>
+                <input type="text" name="usuario_nombre" class="form-control" value="{{ old('usuario_nombre', $user->usuario_nombre) }}" required>
+                @error('usuario_nombre') <small class="text-danger">{{ $message }}</small> @enderror
+            </div>
 
-            <dt class="col-sm-3">Rol</dt>
-            <dd class="col-sm-9">Técnico</dd>
-        </dl>
+            <div class="mb-3">
+                <label>Correo electrónico</label>
+                <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
+                @error('email') <small class="text-danger">{{ $message }}</small> @enderror
+            </div>
 
-        <a href="#" class="btn btn-primary mt-3">Editar Perfil</a>
-    </div>
+            <button type="submit" class="btn btn-success">Guardar cambios</button>
+            <a href="{{ route('tecnico.perfil') }}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    @else
+        <!-- Mostrar los datos sin edición -->
+        <table class="table">
+            <tr><th>Usuario:</th><td>{{ $user->usuario_nombre }}</td></tr>
+            <tr><th>Correo:</th><td>{{ $user->email }}</td></tr>
+        </table>
+        <a href="{{ route('tecnico.perfil', ['edit' => '1']) }}" class="btn btn-primary">Editar</a>
+    @endif
 </div>
 @endsection

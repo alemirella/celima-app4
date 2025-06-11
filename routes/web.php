@@ -7,6 +7,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TecnicoController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ProduccionController;
+use App\Http\Controllers\MantenimientoController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,8 +30,8 @@ Route::post('/registro', [AuthController::class, 'register'])->name('register');
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'rol'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     // Producción general
     Route::get('/produccion', [ProduccionController::class, 'index'])->name('admin.produccion.index');
 
@@ -58,8 +60,7 @@ Route::middleware(['auth', 'rol'])->prefix('admin')->group(function () {
         Route::delete('/produccion/sensores/{id}', [ProduccionController::class, 'destroySensor'])->name('produccion.sensores.destroy');
     
     //mantenimiento
-    Route::get('/mantenimiento', [AdminController::class, 'mantenimiento'])->name('admin.mantenimiento');
-    Route::post('/mantenimiento/resolver/{id}', [AdminController::class, 'resolverFalla'])->name('admin.resolver.falla');
+    Route::get('/mantenimiento', [MantenimientoController::class, 'indexAdmin'])->name('admin.mantenimiento');
     Route::get('/usuarios', [AdminController::class, 'usuarios'])->name('admin.usuarios');
     Route::post('/usuarios/asignar', [AdminController::class, 'asignarPermisos'])->name('admin.usuarios.asignar');
     Route::put('/usuarios/editar/{id}', [AdminController::class, 'editarTecnico'])->name('admin.usuarios.editar');
@@ -67,7 +68,7 @@ Route::middleware(['auth', 'rol'])->prefix('admin')->group(function () {
     Route::get('/perfil', [AdminController::class, 'perfil'])->name('admin.perfil');
     Route::post('/perfil/editar', [AdminController::class, 'editarPerfil'])->name('admin.perfil.editar');
     Route::get('/soporte', [AdminController::class, 'soporte'])->name('admin.soporte');
-    Route::post('/soporte', [AdminController::class, 'soporteSubmit'])->name('admin.soporte.submit');
+    Route::post('/soporte', [AdminController::class, 'submitSoporte'])->name('admin.soporte.submit');
 });
 
 
@@ -78,11 +79,15 @@ Route::middleware(['auth', 'rol'])->prefix('admin')->group(function () {
 */
 Route::middleware(['auth', 'rol:tecnico'])->prefix('tecnico')->group(function () {
     Route::get('/produccion', [TecnicoController::class, 'produccion'])->name('tecnico.produccion');
-    Route::get('/mantenimiento', [TecnicoController::class, 'mantenimiento'])->name('tecnico.mantenimiento');
-    Route::post('/mantenimiento/resolver/{id}', [TecnicoController::class, 'resolverFalla'])->name('tecnico.resolver.falla');
+    Route::get('/mantenimiento', [MantenimientoController::class, 'indexTecnico'])->name('tecnico.mantenimiento');
+    Route::post('/mantenimiento/{id}/resolver', [MantenimientoController::class, 'resolverFalla'])->name('tecnico.resolverFalla');
+
+  
     Route::get('/perfil', [TecnicoController::class, 'perfil'])->name('tecnico.perfil');
     Route::post('/perfil/editar', [TecnicoController::class, 'editarPerfil'])->name('tecnico.perfil.editar');
+
     Route::get('/contacto', [TecnicoController::class, 'contacto'])->name('tecnico.contacto'); // opcional
+    Route::post('/contacto', [TecnicoController::class, 'submitContacto'])->name('tecnico.contacto.submit');
 });
 
 /*
