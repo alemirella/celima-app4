@@ -15,11 +15,22 @@ class TecnicoController extends Controller
 {
     public function produccion()
     {
-        $lineas = LineaProduccion::with('maquinas')->get();
-        $sensores = Sensor::with('maquina')->get();
+        $user = Auth::user();
+
+        // Filtrar líneas de producción por la empresa del técnico
+        $lineas = LineaProduccion::with(['maquinas.sensores'])
+                    ->where('empresa_id', $user->empresa_id)
+                    ->get();
+
+        // Opcional: también puedes cargar los sensores directamente si los necesitas aparte
+        $sensores = Sensor::with('maquina')
+                    ->whereHas('maquina.linea', function ($query) use ($user) {
+                        $query->where('empresa_id', $user->empresa_id);
+                    })->get();
 
         return view('tecnico.produccion', compact('lineas', 'sensores'));
     }
+
     public function mantenimiento()
     {
         return view('tecnico.mantenimiento');

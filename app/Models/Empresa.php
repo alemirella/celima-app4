@@ -13,4 +13,21 @@ class Empresa extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function lineas()
+    {
+        return $this->hasMany(LineaProduccion::class);
+    }
+    public function maquinas()
+    {
+        return $this->hasManyThrough(Maquina::class, LineaProduccion::class);
+    }
+    public function sensores()
+    {
+        return $this->hasManyThrough(Sensor::class, Maquina::class);
+    }
 }
+
+
+
+
