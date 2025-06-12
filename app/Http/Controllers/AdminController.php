@@ -16,10 +16,7 @@ use App\Models\Sensor;
 class AdminController extends Controller
 {
 
-    public function dashboard()
-    {
-        return view('admin.dashboard');
-    }
+    
 
     public function mantenimiento()
     {
@@ -33,9 +30,21 @@ class AdminController extends Controller
     }
 
 
-    public function asignarPermisos(Request $request)
+    public function usuarios()
     {
-        // Lógica para asignar permisos a usuarios
+        $tecnicos = User::where('rol', 'tecnico')
+                        ->where('empresa_id', auth()->user()->empresa_id)
+                        ->get();
+        return view('admin.usuarios.index', compact('tecnicos'));
+    }
+
+    public function formCrearTecnico()
+    {
+        return view('admin.usuarios.create');
+    }
+
+    public function asignarPermisos(Request $request) 
+    {
         $request->validate([
             'usuario_nombre' => 'required|string|max:200|unique:users,usuario_nombre',
             'email' => 'required|email|unique:users,email',
@@ -50,15 +59,25 @@ class AdminController extends Controller
             'empresa_id' => auth()->user()->empresa_id,
         ]);
 
-        return back()->with('success', 'Técnico creado exitosamente.');
+        return redirect()->route('admin.usuarios.index')->with('success', 'Técnico creado exitosamente.');
+    }
+
+    public function formEditarTecnico($id)
+    {
+        $tecnico = User::where('rol', 'tecnico')
+                       ->where('empresa_id', auth()->user()->empresa_id)
+                       ->findOrFail($id);
+        return view('admin.usuarios.edit', compact('tecnico'));
     }
 
     public function editarTecnico(Request $request, $id)
     {
-        $tecnico = User::where('rol', 'tecnico')->where('empresa_id', auth()->user()->empresa_id)->findOrFail($id);
+        $tecnico = User::where('rol', 'tecnico')
+                       ->where('empresa_id', auth()->user()->empresa_id)
+                       ->findOrFail($id);
 
         $request->validate([
-            'usuario_nombre' => 'required|string|max:200|unique:users,usuario_nombre',
+            'usuario_nombre' => 'required|string|max:200|unique:users,usuario_nombre,' . $tecnico->id,
             'email' => 'required|email|unique:users,email,' . $tecnico->id,
         ]);
 
@@ -67,22 +86,19 @@ class AdminController extends Controller
             'email' => $request->email,
         ]);
 
-        return back()->with('success', 'Técnico actualizado correctamente.');
+        return redirect()->route('admin.usuarios.index')->with('success', 'Técnico actualizado correctamente.');
     }
 
     public function eliminarTecnico($id)
     {
-        $tecnico = User::where('rol', 'tecnico')->where('empresa_id', auth()->user()->empresa_id)->findOrFail($id);
+        $tecnico = User::where('rol', 'tecnico')
+                       ->where('empresa_id', auth()->user()->empresa_id)
+                       ->findOrFail($id);
         $tecnico->delete();
 
-        return back()->with('success', 'Técnico eliminado correctamente.');
+        return redirect()->route('admin.usuarios.index')->with('success', 'Técnico eliminado correctamente.');
     }
-
-    public function usuarios()
-    {
-        $tecnicos = User::where('rol', 'tecnico')->where('empresa_id', auth()->user()->empresa_id)->get();
-        return view('admin.usuarios', compact('tecnicos'));
-    }
+    
     
     public function perfil()
     {

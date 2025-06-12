@@ -9,19 +9,20 @@ use App\Models\Sensor;
 
 class ProduccionController extends Controller
 {
-    /*public function index()
-    {
-        return view('admin.produccion.index');
-    }*/
-
     public function index()
     {
-        $lineas = LineaProduccion::with('maquinas')->get();
-        $sensores = Sensor::with('maquina')->get();
+        $empresaId = auth()->user()->empresa_id;
+
+        $lineas = LineaProduccion::where('empresa_id', $empresaId)->with(['maquinas' => function ($query) {
+            $query->with('sensores');
+        }])->get();
+
+        $sensores = Sensor::whereHas('maquina.linea', function($query) use ($empresaId) {
+            $query->where('empresa_id', $empresaId);
+        })->with('maquina')->get();
 
         return view('admin.produccion.index', compact('lineas', 'sensores'));
     }
-
 
     // ===============================
     // LINEAS DE PRODUCCIÓN
@@ -29,7 +30,9 @@ class ProduccionController extends Controller
 
     public function indexLineas()
     {
-        $lineas = LineaProduccion::all();
+        $empresaId = auth()->user()->empresa_id;
+        $lineas = LineaProduccion::where('empresa_id', $empresaId)->get();
+
         return view('admin.produccion.lineas.index', compact('lineas'));
     }
 
@@ -62,13 +65,16 @@ class ProduccionController extends Controller
 
     public function editLinea($id)
     {
-        $linea = LineaProduccion::findOrFail($id);
+        $empresaId = auth()->user()->empresa_id;
+        $linea = LineaProduccion::where('empresa_id', $empresaId)->findOrFail($id);
+
         return view('admin.produccion.lineas.edit', compact('linea'));
     }
 
     public function updateLinea(Request $request, $id)
     {
-        $linea = LineaProduccion::findOrFail($id);
+        $empresaId = auth()->user()->empresa_id;
+        $linea = LineaProduccion::where('empresa_id', $empresaId)->findOrFail($id);
 
         $request->validate([
             'nombre' => 'required|string|max:100',
@@ -85,7 +91,8 @@ class ProduccionController extends Controller
 
     public function destroyLinea($id)
     {
-        $linea = LineaProduccion::findOrFail($id);
+        $empresaId = auth()->user()->empresa_id;
+        $linea = LineaProduccion::where('empresa_id', $empresaId)->findOrFail($id);
         $linea->delete();
 
         return redirect()->route('produccion.lineas.index')->with('success', 'Línea eliminada correctamente.');
@@ -97,13 +104,20 @@ class ProduccionController extends Controller
 
     public function indexMaquinas()
     {
-        $maquinas = Maquina::with('linea')->get();
+        $empresaId = auth()->user()->empresa_id;
+
+        $maquinas = Maquina::whereHas('linea', function($query) use ($empresaId) {
+            $query->where('empresa_id', $empresaId);
+        })->get();
+
         return view('admin.produccion.maquinas.index', compact('maquinas'));
     }
 
     public function createMaquina()
     {
-        $lineas = LineaProduccion::all();
+        $empresaId = auth()->user()->empresa_id;
+        $lineas = LineaProduccion::where('empresa_id', $empresaId)->get();
+
         return view('admin.produccion.maquinas.create', compact('lineas'));
     }
 
@@ -119,6 +133,8 @@ class ProduccionController extends Controller
             'linea_id' => 'required|exists:lineas_produccion,id'
         ]);
 
+        $linea = LineaProduccion::where('empresa_id', auth()->user()->empresa_id)->findOrFail($request->linea_id);
+
         Maquina::create($request->all());
 
         return redirect()->route('produccion.maquinas.index')->with('success', 'Máquina registrada correctamente.');
@@ -126,14 +142,22 @@ class ProduccionController extends Controller
 
     public function editMaquina($id)
     {
-        $maquina = Maquina::findOrFail($id);
-        $lineas = LineaProduccion::all();
+        $empresaId = auth()->user()->empresa_id;
+        $maquina = Maquina::whereHas('linea', function($query) use ($empresaId) {
+            $query->where('empresa_id', $empresaId);
+        })->findOrFail($id);
+
+        $lineas = LineaProduccion::where('empresa_id', $empresaId)->get();
+
         return view('admin.produccion.maquinas.edit', compact('maquina', 'lineas'));
     }
 
     public function updateMaquina(Request $request, $id)
     {
-        $maquina = Maquina::findOrFail($id);
+        $empresaId = auth()->user()->empresa_id;
+        $maquina = Maquina::whereHas('linea', function($query) use ($empresaId) {
+            $query->where('empresa_id', $empresaId);
+        })->findOrFail($id);
 
         $request->validate([
             'nombre' => 'required|string|max:100',
@@ -152,7 +176,11 @@ class ProduccionController extends Controller
 
     public function destroyMaquina($id)
     {
-        $maquina = Maquina::findOrFail($id);
+        $empresaId = auth()->user()->empresa_id;
+        $maquina = Maquina::whereHas('linea', function($query) use ($empresaId) {
+            $query->where('empresa_id', $empresaId);
+        })->findOrFail($id);
+
         $maquina->delete();
 
         return redirect()->route('produccion.maquinas.index')->with('success', 'Máquina eliminada correctamente.');
@@ -164,13 +192,23 @@ class ProduccionController extends Controller
 
     public function indexSensores()
     {
-        $sensores = Sensor::with('maquina')->get();
+        $empresaId = auth()->user()->empresa_id;
+
+        $sensores = Sensor::whereHas('maquina.linea', function($query) use ($empresaId) {
+            $query->where('empresa_id', $empresaId);
+        })->get();
+
         return view('admin.produccion.sensores.index', compact('sensores'));
     }
 
     public function createSensor()
     {
-        $maquinas = Maquina::all();
+        $empresaId = auth()->user()->empresa_id;
+
+        $maquinas = Maquina::whereHas('linea', function ($query) use ($empresaId) {
+            $query->where('empresa_id', $empresaId);
+        })->get();
+
         return view('admin.produccion.sensores.create', compact('maquinas'));
     }
 
@@ -185,6 +223,10 @@ class ProduccionController extends Controller
             'maquina_id' => 'required|exists:maquinas,id'
         ]);
 
+        $maquina = Maquina::whereHas('linea', function ($query) {
+            $query->where('empresa_id', auth()->user()->empresa_id);
+        })->findOrFail($request->maquina_id);
+
         Sensor::create($request->all());
 
         return redirect()->route('produccion.sensores.index')->with('success', 'Sensor registrado correctamente.');
@@ -192,14 +234,26 @@ class ProduccionController extends Controller
 
     public function editSensor($id)
     {
-        $sensor = Sensor::findOrFail($id);
-        $maquinas = Maquina::all();
+        $empresaId = auth()->user()->empresa_id;
+
+        $sensor = Sensor::whereHas('maquina.linea', function ($query) use ($empresaId) {
+            $query->where('empresa_id', $empresaId);
+        })->findOrFail($id);
+
+        $maquinas = Maquina::whereHas('linea', function ($query) use ($empresaId) {
+            $query->where('empresa_id', $empresaId);
+        })->get();
+
         return view('admin.produccion.sensores.edit', compact('sensor', 'maquinas'));
     }
 
     public function updateSensor(Request $request, $id)
     {
-        $sensor = Sensor::findOrFail($id);
+        $empresaId = auth()->user()->empresa_id;
+
+        $sensor = Sensor::whereHas('maquina.linea', function ($query) use ($empresaId) {
+            $query->where('empresa_id', $empresaId);
+        })->findOrFail($id);
 
         $request->validate([
             'nombre' => 'required|string|max:100',
@@ -217,7 +271,12 @@ class ProduccionController extends Controller
 
     public function destroySensor($id)
     {
-        $sensor = Sensor::findOrFail($id);
+        $empresaId = auth()->user()->empresa_id;
+
+        $sensor = Sensor::whereHas('maquina.linea', function ($query) use ($empresaId) {
+            $query->where('empresa_id', $empresaId);
+        })->findOrFail($id);
+
         $sensor->delete();
 
         return redirect()->route('produccion.sensores.index')->with('success', 'Sensor eliminado correctamente.');

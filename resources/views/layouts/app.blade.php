@@ -4,141 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@yield('title', 'CelimaCore - Gestión Integral')</title>
-    <!-- Bootstrap CSS CDN -->
+
+    <!-- Bootstrap & Fuentes -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        /* Colores y estilo personalizado */
-        :root {
-            --celima-blue: #6aaec3;
-            --celima-light: #a5c8d3;
-            --celima-dark: #395d6b;
-            --celima-bg: #f5f9fb;
-            --celima-gray-dark: #3a3a3a;
-            --celima-gray-light: #dfe6e9;
-        }
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--celima-bg);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            color: var(--celima-gray-dark);
-        }
-
-        main {
-            flex-grow: 1;
-            padding-top: 2rem;
-            padding-bottom: 3rem;
-        }
-
-        footer {
-            background-color: var(--celima-dark);
-            color: #e0e6eb;
-            padding: 1rem 0;
-            text-align: center;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
-        .navbar {
-            background-color: var(--celima-blue);
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.6rem;
-            color: #fff !important;
-        }
-
-        .navbar-nav .nav-link {
-            color: #e0e6eb !important;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .navbar-nav .nav-link.active,
-        .navbar-nav .nav-link:hover {
-            color: var(--celima-light) !important;
-            font-weight: 700;
-        }
-
-        /* Botones */
-        .btn-primary {
-            background-color: var(--celima-dark);
-            border: none;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--celima-blue);
-        }
-
-        /* Formularios */
-        input.form-control,
-        textarea.form-control {
-            border-radius: 0.4rem;
-            border: 1.5px solid var(--celima-light);
-            transition: border-color 0.3s ease;
-            font-size: 1rem;
-        }
-
-        input.form-control:focus,
-        textarea.form-control:focus {
-            border-color: var(--celima-dark);
-            box-shadow: none;
-        }
-
-        label.form-label {
-            font-weight: 600;
-            color: var(--celima-dark);
-        }
-
-        /* Títulos */
-        h1 {
-            font-weight: 700;
-            color: var(--celima-dark);
-            margin-bottom: 1.5rem;
-        }
-
-        /* Alertas */
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border-radius: 0.4rem;
-            padding: 1rem 1.25rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .alert-danger {
-            background-color: #f8d7da;
-            color: #721c24;
-            border-radius: 0.4rem;
-            padding: 1rem 1.25rem;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Responsive padding */
-        @media (min-width: 768px) {
-            main.container {
-                max-width: 720px;
-            }
-        }
-    </style>
+    {{-- Estilos personalizados --}}
+    @include('layouts.designs.app_design')
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg shadow-sm">
-    <div class="container">
-        <a class="navbar-brand" href="{{ route('home') }}">CelimaCore</a>
+<nav class="navbar navbar-expand-lg fixed-top shadow-sm">
+    <div class="container py-2">
+        <a class="navbar-brand" href="{{ route('home') }}">
+            <span style="font-family: 'Segoe UI', sans-serif; font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px;">
+                CelimaCore
+            </span>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+            <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto gap-3">
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav gap-2">
                 <li class="nav-item">
                     <a class="nav-link @if(request()->routeIs('home')) active @endif" href="{{ route('home') }}">Inicio</a>
                 </li>
@@ -159,23 +48,56 @@
     </div>
 </nav>
 
-<main class="container">
+<main class="container fade-slide-up show">
     @if(session('success'))
-        <div class="alert alert-success shadow-sm rounded">{{ session('success') }}</div>
+        <div class="alert alert-success shadow-sm mt-4">{{ session('success') }}</div>
     @endif
     @if(session('error'))
-        <div class="alert alert-danger shadow-sm rounded">{{ session('error') }}</div>
+        <div class="alert alert-danger shadow-sm mt-4">{{ session('error') }}</div>
     @endif
 
-    @yield('content')
+    <div class="card-custom mt-4">
+        @yield('content')
+    </div>
 </main>
 
-<footer>
-    &copy; {{ date('Y') }} CelimaCore — Gestión Integral de Producción y Mantenimiento
+<footer class="mt-auto">
+    <div class="footer-social">
+        <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+            <i class="bi bi-facebook"></i>
+        </a>
+        <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+            <i class="bi bi-instagram"></i>
+        </a>
+        <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
+            <i class="bi bi-linkedin"></i>
+        </a>
+    </div>
+    &copy; {{ date('Y') }} <strong>CelimaCore</strong> — Gestión Integral de Producción y Mantenimiento
 </footer>
 
-<!-- Bootstrap JS Bundle CDN -->
+<!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Navbar dinámica con sombra al hacer scroll
+    window.addEventListener('scroll', function () {
+        const nav = document.querySelector('.navbar');
+        if (window.scrollY > 10) {
+            nav.classList.add('navbar-scrolled');
+        } else {
+            nav.classList.remove('navbar-scrolled');
+        }
+    });
+
+    // Funcionalidad de secciones colapsables
+    function toggleCollapse(element) {
+        const content = element.nextElementSibling;
+        const arrow = element.querySelector('.collapsible-arrow');
+        content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+        arrow.classList.toggle('rotate');
+    }
+</script>
 
 </body>
 </html>

@@ -11,17 +11,29 @@ class MantenimientoController extends Controller
 {
     public function indexAdmin()
     {
-        $fallas = Falla::with(['sensor', 'linea', 'maquina'])->latest()->get();
+        $empresaId = auth()->user()->empresa_id;
+
+        $fallas = Falla::with(['sensor', 'linea', 'maquina'])
+            ->whereHas('linea', function ($query) use ($empresaId) {
+                $query->where('empresa_id', $empresaId);
+            })
+            ->latest()
+            ->get();
+
         return view('admin.mantenimiento', compact('fallas'));
     }
 
     public function indexTecnico()
     {
-        // Mostrar solo las fallas pendientes
+        $empresaId = auth()->user()->empresa_id;
+
         $fallas = Falla::with(['sensor', 'linea', 'maquina'])
-                    ->where('estado', 'pendiente')
-                    ->orderByDesc('fecha_reporte')
-                    ->get();
+            ->where('estado', 'pendiente')
+            ->whereHas('linea', function ($query) use ($empresaId) {
+                $query->where('empresa_id', $empresaId);
+            })
+            ->orderByDesc('fecha_reporte')
+            ->get();
 
         return view('tecnico.mantenimiento', compact('fallas'));
     }
@@ -37,5 +49,4 @@ class MantenimientoController extends Controller
 
         return redirect()->back()->with('success', 'Falla marcada como resuelta.');
     }
-
 }

@@ -61,10 +61,14 @@ Route::middleware(['auth', 'rol'])->prefix('admin')->group(function () {
     
     //mantenimiento
     Route::get('/mantenimiento', [MantenimientoController::class, 'indexAdmin'])->name('admin.mantenimiento');
-    Route::get('/usuarios', [AdminController::class, 'usuarios'])->name('admin.usuarios');
-    Route::post('/usuarios/asignar', [AdminController::class, 'asignarPermisos'])->name('admin.usuarios.asignar');
-    Route::put('/usuarios/editar/{id}', [AdminController::class, 'editarTecnico'])->name('admin.usuarios.editar');
-    Route::delete('/usuarios/eliminar/{id}', [AdminController::class, 'eliminarTecnico'])->name('admin.usuarios.eliminar');
+    // Usuarios - Técnicos
+    Route::get('/usuarios', [AdminController::class, 'usuarios'])->name('admin.usuarios.index');
+    Route::get('/usuarios/crear', [AdminController::class, 'formCrearTecnico'])->name('admin.usuarios.form');
+    Route::post('/usuarios/asignar', [AdminController::class, 'asignarPermisos'])->name('admin.usuarios.create');
+    Route::get('/usuarios/editar/{id}', [AdminController::class, 'formEditarTecnico'])->name('admin.usuarios.edit');
+    Route::put('/usuarios/editar/{id}', [AdminController::class, 'editarTecnico'])->name('admin.usuarios.update');
+    Route::delete('/usuarios/eliminar/{id}', [AdminController::class, 'eliminarTecnico'])->name('admin.usuarios.destroy');
+
     Route::get('/perfil', [AdminController::class, 'perfil'])->name('admin.perfil');
     Route::post('/perfil/editar', [AdminController::class, 'editarPerfil'])->name('admin.perfil.editar');
     Route::get('/soporte', [AdminController::class, 'soporte'])->name('admin.soporte');
