@@ -46,7 +46,7 @@ class AuthController extends Controller
             'empresa_direccion' => 'required|string|max:200|unique:empresas,direccion',
             'empresa_telefono' => 'required|string|max:10|unique:empresas,telefono',
             'usuario_nombre' => 'required|string|max:200|unique:users,usuario_nombre',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email|unique:users,email|max:200',
             'password' => 'required|string|min:8|confirmed',
         ]);
 

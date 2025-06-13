@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@yield('title', 'CelimaCore - Técnico')</title>
+    <title>@yield('title', 'GestuM - Técnico')</title>
 
     {{-- Bootstrap + Fuentes --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -18,7 +18,9 @@
     <div class="d-flex" style="min-height: 100vh; overflow-x: hidden;">
         {{-- Sidebar Técnico --}}
         <aside class="sidebar p-3">
-            <h4 class="text-white text-center mb-4 fw-bold">CelimaCore Técnico</h4>
+            <h4 class="text-white text-center mb-4" style="font-family: 'Segoe UI', sans-serif; font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px;">
+            GestuM Técnico
+            </h4>
             <nav class="nav flex-column">
                 <a class="nav-link @if(request()->routeIs('tecnico.produccion')) active @endif" href="{{ route('tecnico.produccion') }}">
                     <i class="bi bi-gear-fill me-2"></i> Producción
@@ -53,7 +55,7 @@
             </main>
 
             <footer class="mt-auto text-center py-3">
-                &copy; {{ date('Y') }} <strong>CelimaCore</strong> — Panel Técnico
+                &copy; {{ date('Y') }} <strong>GestuM</strong> — Panel Técnico
             </footer>
         </div>
     </div>

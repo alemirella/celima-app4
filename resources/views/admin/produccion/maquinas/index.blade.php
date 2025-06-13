@@ -6,12 +6,20 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fw-bold text-celima">Máquinas Registradas</h2>
-        <a href="{{ route('admin.produccion.index') }}" class="btn btn-outline-celima d-flex align-items-center">
-            <i class="bi bi-arrow-left-circle me-2"></i> Volver al Panel
-        </a>
-        <a href="{{ route('produccion.maquinas.create') }}" class="btn btn-celima">
-            <i class="bi bi-plus-circle me-1"></i> Registrar Nueva Máquina
-        </a>
+        <div class="d-flex gap-2">
+            <a href="{{ route('admin.produccion.index') }}" class="btn btn-outline-celima d-flex align-items-center">
+                <i class="bi bi-arrow-left-circle me-2"></i> Volver al Panel
+            </a>
+            @if($puedeRegistrarMaquina)
+                <a href="{{ route('produccion.maquinas.create') }}" class="btn btn-celima">
+                    <i class="bi bi-plus-circle me-1"></i> Registrar Nueva Máquina
+                </a>
+            @else
+                <button class="btn btn-secondary" disabled>
+                    <i class="bi bi-exclamation-circle me-1"></i> Límite de máquinas alcanzado
+                </button>
+            @endif
+        </div>
     </div>
 
     @if(session('success'))
@@ -69,7 +77,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="8" class="text-center text-muted py-4">No hay máquinas registradas.</td>
+                            <td colspan="9" class="text-center text-muted py-4">No hay máquinas registradas.</td>
                         </tr>
                         @endforelse
                     </tbody>

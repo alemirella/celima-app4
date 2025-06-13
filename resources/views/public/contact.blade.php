@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Contáctanos - CelimaCore')
+@section('title', 'Contáctanos - GestuM')
 
 @section('content')
 <div class="container py-3 fade-slide-up show">

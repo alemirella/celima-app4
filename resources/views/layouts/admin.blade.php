@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@yield('title', 'CelimaCore - Admin')</title>
+    <title>@yield('title', 'GestuM - Admin')</title>
 
     {{-- Bootstrap y fuentes --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -17,8 +17,10 @@
 
     <div class="d-flex" style="min-height: 100vh; overflow-x: hidden;">
         {{-- Sidebar lateral --}}
-        <aside class="sidebar bg-dark text-white p-3">
-            <h4 class="text-white text-center mb-4 fw-bold">CelimaCore Admin</h4>
+        <aside class="sidebar bg-dark text-white p-3">   
+            <h4 class="text-white text-center mb-4" style="font-family: 'Segoe UI', sans-serif; font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px;">
+                GestuM Admin
+            </h4>
             <nav class="nav flex-column">
                 <a class="nav-link text-white @if(request()->routeIs('admin.dashboard')) active @endif" href="{{ route('admin.dashboard') }}">
                     <i class="bi bi-speedometer2 me-2"></i> Dashboard
@@ -59,7 +61,7 @@
             </main>
 
             <footer class="mt-auto text-center py-3 text-white">
-                &copy; {{ date('Y') }} <strong>CelimaCore</strong> — Panel de Administración
+                &copy; {{ date('Y') }} <strong>GestuM</strong> — Panel de Administración
             </footer>
         </div>
     </div>

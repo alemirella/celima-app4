@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@yield('title', 'CelimaCore - Gestión Integral')</title>
+    <title>@yield('title', 'GestuM - Gestión Integral')</title>
 
     <!-- Bootstrap & Fuentes -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -19,7 +19,7 @@
     <div class="container py-2">
         <a class="navbar-brand" href="{{ route('home') }}">
             <span style="font-family: 'Segoe UI', sans-serif; font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px;">
-                CelimaCore
+                GestuM
             </span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -73,7 +73,7 @@
             <i class="bi bi-linkedin"></i>
         </a>
     </div>
-    &copy; {{ date('Y') }} <strong>CelimaCore</strong> — Gestión Integral de Producción y Mantenimiento
+    &copy; {{ date('Y') }} <strong>GestuM</strong> — Gestión Integral de Producción y Mantenimiento
 </footer>
 
 <!-- Bootstrap JS Bundle -->

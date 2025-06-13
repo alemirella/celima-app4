@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Dashboard - CelimaCore Admin')
+@section('title', 'Dashboard - GestuM Admin')
 
 @section('content')
 <div class="container-fluid py-4">

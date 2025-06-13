@@ -110,8 +110,16 @@ class ProduccionController extends Controller
             $query->where('empresa_id', $empresaId);
         })->get();
 
-        return view('admin.produccion.maquinas.index', compact('maquinas'));
+        $lineas = LineaProduccion::where('empresa_id', $empresaId)->withCount('maquinas')->get();
+
+        // Verifica si hay al menos una línea que permita más máquinas
+        $puedeRegistrarMaquina = $lineas->contains(function ($linea) {
+            return is_null($linea->numero_maquinas) || $linea->maquinas_count < $linea->numero_maquinas;
+        });
+
+        return view('admin.produccion.maquinas.index', compact('maquinas', 'puedeRegistrarMaquina'));
     }
+
 
     public function createMaquina()
     {
@@ -125,20 +133,42 @@ class ProduccionController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|max:100',
-            'numero_serie' => 'required|string|unique:maquinas,numero_serie,',
+            'numero_serie' => 'required|string|unique:maquinas,numero_serie',
             'modelo' => 'required|string',
             'marca' => 'required|string',
             'ubicacion' => 'nullable|string',
             'estado' => 'required|in:activa,detenida,mantenimiento',
             'linea_id' => 'required|exists:lineas_produccion,id'
         ]);
-
+    
         $linea = LineaProduccion::where('empresa_id', auth()->user()->empresa_id)->findOrFail($request->linea_id);
-
-        Maquina::create($request->all());
-
+    
+        // Validar cantidad máxima de máquinas
+        $maquinasActuales = $linea->maquinas()->count();
+        if ($linea->numero_maquinas !== null && $maquinasActuales >= $linea->numero_maquinas) {
+            return redirect()->back()
+                ->withErrors(['linea_id' => 'Esta línea ya alcanzó el número máximo de máquinas permitidas.'])
+                ->withInput();
+        }
+    
+        // Validar que la ubicación de la máquina coincida con la línea
+        if ($request->filled('ubicacion') && $request->ubicacion !== $linea->ubicacion) {
+            return redirect()->back()
+                ->withErrors(['ubicacion' => 'La ubicación de la máquina debe coincidir con la ubicación de la línea.'])
+                ->withInput();
+        }
+    
+        // Usar la ubicación de la línea si no se ingresó
+        $data = $request->all();
+        if (!$request->filled('ubicacion')) {
+            $data['ubicacion'] = $linea->ubicacion;
+        }
+    
+        Maquina::create($data);
+    
         return redirect()->route('produccion.maquinas.index')->with('success', 'Máquina registrada correctamente.');
     }
+    
 
     public function editMaquina($id)
     {

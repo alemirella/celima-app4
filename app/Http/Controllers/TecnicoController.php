@@ -31,11 +31,6 @@ class TecnicoController extends Controller
         return view('tecnico.produccion', compact('lineas', 'sensores'));
     }
 
-    public function mantenimiento()
-    {
-        return view('tecnico.mantenimiento');
-    }
-
     public function resolverFalla($id)
     {
         // Lógica para resolver falla
@@ -77,9 +72,9 @@ class TecnicoController extends Controller
     public function submitContacto(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255',
-            'email' => 'required|email',
-            'mensaje' => 'required|string',
+            'nombre' => 'required|string|min:3|max:100',
+            'email' => 'required|email|max:200',
+            'mensaje' => 'required|string|min:5|max:1000',
         ]);
 
         ContactMessage::create([

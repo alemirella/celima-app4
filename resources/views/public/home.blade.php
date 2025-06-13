@@ -1,10 +1,10 @@
 @extends('layouts.app')
-@section('title', 'Inicio - CelimaCore')
+@section('title', 'Inicio - GestuM')
 @section('content')
 
 <div class="text-center py-3 fade-slide-up show">
     <h1 class="mb-4 display-5 fw-bold">
-        Bienvenido a <span class="text-gradient">CelimaCore</span>
+        Bienvenido a <span class="text-gradient">GestuM</span>
     </h1>
 
     <p class="lead mb-5 mx-auto" style="color: var(--celima-dark); max-width: 800px;">
@@ -22,7 +22,7 @@
                         <i class="bi bi-cpu-fill" style="font-size: 2.2rem;"></i>
                     </div>
                     <h5 class="fw-bold">Automatización Inteligente</h5>
-                    <p class="mb-0">Análisis predictivo con sensores para prevenir fallas y optimizar el mantenimiento.</p>
+                    <p class="mb-0">Análisis con sensores para prevenir fallas y optimizar el mantenimiento.</p>
                 </div>
             </div>
         </div>
